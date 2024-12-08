@@ -1,0 +1,148 @@
+/* Ajuste de botones dentro de los formularios */
+.modal-body form button {
+  width: 100%; 
+  margin-bottom: 10px; 
+}
+
+/* Barra superior */
+.top-bar {
+  position: relative;
+  top: 0;
+  left: 0;
+  right: 0;
+  z-index: 1000; 
+  background-color: #B21A1A;
+  color: #FFFFFF;
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin: 0; /* Elimina cualquier margen */
+}
+
+/* Barra de navegación */
+.main-nav {
+  position: relative;
+  top: 0; /* Asegura que comience justo debajo de la barra superior */
+  left: 0;
+  right: 0;
+  z-index: 999; 
+  background-color: #B21A1A; 
+  color: #FFFFFF; 
+  padding: 10px 20px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1); 
+  margin: 0; /* Elimina cualquier margen */
+}
+
+/* Barra de categorías */
+.category-bar {
+  position: relative;
+  top: 0; /* Asegura que comience justo debajo de la barra de navegación */
+  left: 0;
+  right: 0;
+  z-index: 998; 
+  background-color: #B21A1A; 
+  color: #FFFFFF; 
+  padding: 10px 20px;
+  margin: 0; /* Elimina cualquier margen */
+}
+
+/* Eliminar padding superior en el body */
+body {
+  padding-top: 0; 
+  margin: 0; /* Asegura que no haya espacio entre el body y las barras */
+}
+
+/* Estilo para los botones */
+.buttons {
+  display: flex;  
+  gap: 15px;    
+}
+
+/* Estilo de los productos en el carrito */
+.cart-item {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  padding: 10px;
+  border-bottom: 1px solid #ddd;
+  width: 100%;  
+}
+
+.cart-item .product-name {
+  flex-grow: 1;
+  word-wrap: break-word; 
+}
+
+.cart-item .product-price,
+.cart-item .product-quantity {
+  margin-left: 10px;
+}
+
+.cart-item img {
+  max-width: 50px;  
+  max-height: 50px;
+  object-fit: cover;  
+}
+
+.cart-item {
+  overflow: hidden; 
+}
+
+.cart-item .product-name {
+  overflow: hidden;
+  text-overflow: ellipsis; 
+  white-space: nowrap; 
+}
+
+/* Espacio entre el nombre de usuario y el botón de cerrar sesión */
+#user-greeting {
+  margin-right: 10px; 
+}
+
+/* Estilos para la tabla */
+table {
+  width: 100%;  
+  background-color: white;
+  border: 1px solid black;
+  border-collapse: collapse; 
+  margin-top: 20px; /* Ajusta para dar espacio a otros elementos */
+}
+
+th, td {
+  padding: 30px;  
+  text-align: left; 
+  border-bottom: 1px solid #ddd;  
+}
+
+th {
+  background-color: #f8f8f8; 
+}
+
+/* Contenedor de la tabla */
+.cart-container {
+  padding-top: 10px;
+  margin-top: 0; /* Elimina espacio innecesario */
+  padding-bottom: 20px;
+  max-height: calc(100vh - 270px);
+  overflow-y: auto;
+}
+
+/* Ajustar margen superior de la tabla */
+table {
+  width: 100%;
+  background-color: white;
+  border: 1px solid black;
+  border-collapse: collapse;
+  margin-top: 20px;
+}
+
+th, td {
+  padding: 10px;
+  text-align: left;
+  border-bottom: 1px solid #ddd;
+}
+
+/* Asegura que la tabla se ajuste dentro del contenedor */
+.cart-container table {
+  width: 100%;
+  border-collapse: collapse;
+}

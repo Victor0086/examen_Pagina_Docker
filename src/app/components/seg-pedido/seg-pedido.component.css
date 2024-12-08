@@ -1,0 +1,99 @@
+/* Tabla de datos */
+.table {
+  margin-top: 30px;
+  box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
+}
+
+.table th,
+.table td {
+  text-align: center;
+  vertical-align: middle;
+}
+
+/* Encabezados y textos destacados */
+.mt-3 h4,
+.mt-3 p {
+  font-size: 1.1rem;
+  font-weight: 600;
+}
+
+.text-danger {
+  color: #e74c3c;
+}
+
+/* Botón de acción */
+.btn-danger {
+  background-color: #e74c3c;
+  border: none;
+  color: white;
+}
+
+.btn-danger:hover {
+  background-color: #c0392b;
+}
+
+/* Estilo para botones dentro del modal */
+.modal-body form button {
+  width: 100%;
+  margin-bottom: 10px;
+}
+
+
+
+/* Barra de categorías */
+.category-bar {
+  margin-top: 120px;
+  background-color: #B21A1A;
+  color: #FFFFFF;
+  padding: 10px 20px;
+}
+
+/* Ajuste del cuerpo de la página */
+body {
+  padding-top: 180px;
+}
+
+/* Mensaje de bienvenida y saludo */
+#user-greeting {
+  margin-right: 10px;
+}
+
+/* Contenedor principal */
+.tracking-container {
+  margin-top: 160px; /* Ajuste para alinear debajo de la barra fija */
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  box-shadow: 0 2px 6px rgba(0, 0, 0, 0.1);
+}
+
+/* Espaciado entre la barra de navegación y el contenido */
+body {
+  padding-top: 180px; /* Ajustado para evitar solapamientos con la barra fija */
+}
+
+
+/* Encabezados en el seguimiento */
+.tracking-container h2 {
+  font-size: 1.5rem;
+  color: #333;
+  margin-bottom: 20px;
+}
+
+/* Botón de búsqueda */
+.tracking-container .btn-danger {
+  margin-top: 15px;
+}
+
+/* Alertas */
+.alert-success {
+  background-color: #d4edda;
+  color: #155724;
+  border-color: #c3e6cb;
+}
+
+.alert-danger {
+  background-color: #f8d7da;
+  color: #721c24;
+  border-color: #f5c6cb;
+}

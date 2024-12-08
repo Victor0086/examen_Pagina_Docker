@@ -1,0 +1,247 @@
+<!-- Barra de navegación principal -->
+<nav class="navbar navbar-expand-lg main-nav">
+  <div class="container-fluid">
+    <!-- Logo de la página -->
+    <a class="navbar-brand logo" href="#">
+      <img src="../imagenes/PATAPANDA.png" alt="Logo de la página">
+    </a>
+  </div>
+</nav>
+
+
+<div class="container mt-4">
+  <!-- Mostrar Nombre del Usuario Administrador -->
+  <div class="alert alert-primary mt-3" *ngIf="adminUser">
+    Bienvenido, {{ adminUser }}
+  </div>
+
+  <!-- Modificar Estado de Pedido -->
+  <h1>Modificar Estado de Pedido</h1>
+  <form [formGroup]="trackingForm" (ngSubmit)="updateOrderStatus()">
+    <div>
+      <input
+        type="text"
+        class="form-control mb-2"
+        placeholder="Número de seguimiento"
+        formControlName="trackingNumber"
+      />
+      <select
+        class="form-control mb-2"
+        formControlName="orderStatus"
+      >
+        <option value="" disabled>Seleccionar estado</option>
+        <option value="Pendiente">Pendiente</option>
+        <option value="En proceso">En proceso</option>
+        <option value="Enviado">Enviado</option>
+        <option value="Entregado">Entregado</option>
+      </select>
+      <button class="btn btn-primary" type="submit">
+        Actualizar Estado
+      </button>
+    </div>
+    <div class="text-success mt-2">{{ updateMessage }}</div>
+  </form>
+
+  <!-- Botones de Acción -->
+  <div class="d-flex justify-content-center mb-4">
+    <button
+      class="btn btn-secondary me-2"
+      (click)="redirectToHome()"
+    >
+      <i class="fas fa-home"></i> Home
+    </button>
+    <button
+      class="btn btn-danger"
+      (click)="logout()"
+    >
+      <i class="fas fa-sign-out-alt"></i> Cerrar Sesión
+    </button>
+  </div>
+</div>
+
+
+  <!-- Modal de Cierre de Sesión -->
+<div class="modal fade" id="logoutSuccessModal" tabindex="-1" aria-labelledby="logoutSuccessModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutSuccessModalLabel">Cierre de Sesión</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
+      </div>
+      <div class="modal-body">
+        ¡Has cerrado sesión exitosamente!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+  
+<!-- Formulario de Registro -->
+<div class="container d-flex justify-content-center align-items-center form-container">  <div class="col-12 col-md-8 col-lg-6">
+    <div class="card shadow-lg">
+      <div class="card-header text-center bg-danger text-white">
+        <h3>Registro de Usuario</h3>
+      </div>
+      <div class="card-body">
+        <h4 class="text-center mb-4">Crear un Usuario Nuevo</h4>
+        <form [formGroup]="registerForm" (ngSubmit)="onRegisterSubmit()">
+          <!-- Nombre Completo -->
+          <div class="form-group mb-3">
+            <label for="nombreCompleto">Nombre Completo</label>
+            <input
+              type="text"
+              id="nombreCompleto"
+              formControlName="nombreCompleto"
+              class="form-control"
+              placeholder="Ingresa tu nombre completo"
+            />
+            <div *ngIf="registerForm.get('nombreCompleto')?.touched && registerForm.get('nombreCompleto')?.invalid" class="text-danger">
+              Nombre completo es requerido.
+            </div>
+          </div>
+
+          <!-- Nombre de Usuario -->
+          <div class="form-group mb-3">
+            <label for="nombreUsuario">Nombre de Usuario</label>
+            <input
+              type="text"
+              id="nombreUsuario"
+              formControlName="nombreUsuario"
+              class="form-control"
+              placeholder="Ingresa un nombre de usuario"
+            />
+            <div *ngIf="registerForm.get('nombreUsuario')?.touched && registerForm.get('nombreUsuario')?.invalid" class="text-danger">
+              Nombre de usuario es requerido.
+            </div>
+          </div>
+
+          <!-- Correo Electrónico -->
+          <div class="form-group mb-3">
+            <label for="email">Correo Electrónico</label>
+            <input
+              type="email"
+              id="email"
+              formControlName="email"
+              class="form-control"
+              placeholder="Ingresa tu correo electrónico"
+            />
+            <div *ngIf="registerForm.get('email')?.touched && registerForm.get('email')?.invalid" class="text-danger">
+              <div *ngIf="registerForm.get('email')?.errors?.['required']">Correo electrónico es requerido.</div>
+              <div *ngIf="registerForm.get('email')?.errors?.['email']">Correo electrónico no es válido.</div>
+              <div *ngIf="registerForm.get('email')?.errors?.['dominioInvalido']">El dominio del correo no es válido.</div>
+            </div>
+          </div>
+
+          <!-- Contraseña -->
+          <div class="form-group mb-3">
+            <label for="password">Contraseña</label>
+            <input
+              type="password"
+              id="password"
+              formControlName="password"
+              class="form-control"
+              placeholder="Ingresa tu contraseña"
+            />
+            <div *ngIf="registerForm.get('password')?.touched && registerForm.get('password')?.invalid" class="text-danger">
+              <div *ngIf="registerForm.get('password')?.errors?.['required']">Contraseña es requerida.</div>
+              <div *ngIf="registerForm.get('password')?.errors?.['minlength']">La contraseña debe tener al menos 6 caracteres.</div>
+              <div *ngIf="registerForm.get('password')?.errors?.['maxlength']">La contraseña no puede exceder 18 caracteres.</div>
+              <div *ngIf="registerForm.get('password')?.errors?.['pattern']">Debe contener al menos una letra mayúscula y un número.</div>
+            </div>
+          </div>
+
+          <!-- Confirmar Contraseña -->
+          <div class="form-group mb-3">
+            <label for="confirmPassword">Confirmar Contraseña</label>
+            <input
+              type="password"
+              id="confirmPassword"
+              formControlName="confirmPassword"
+              class="form-control"
+              placeholder="Confirma tu contraseña"
+            />
+            <div *ngIf="registerForm.get('confirmPassword')?.touched && registerForm.errors?.['notSame']" class="text-danger">
+              Las contraseñas no coinciden.
+            </div>
+          </div>
+
+          <!-- Fecha de Nacimiento -->
+          <div class="form-group mb-3">
+            <label for="fechaNacimiento">Fecha de Nacimiento</label>
+            <input
+              type="date"
+              id="fechaNacimiento"
+              formControlName="fechaNacimiento"
+              class="form-control"
+            />
+            <div *ngIf="registerForm.get('fechaNacimiento')?.touched && registerForm.get('fechaNacimiento')?.invalid" class="text-danger">
+              <div *ngIf="registerForm.get('fechaNacimiento')?.errors?.['edadMinima']">Debes tener al menos 13 años para registrarte.</div>
+              <div *ngIf="registerForm.get('fechaNacimiento')?.errors?.['edadMaxima']">No puedes tener más de 100 años.</div>
+            </div>
+          </div>
+
+          <!-- Dirección -->
+          <div class="form-group mb-3">
+            <label for="direccion">Dirección</label>
+            <input
+              type="text"
+              id="direccion"
+              formControlName="direccion"
+              class="form-control"
+              placeholder="Ingresa tu dirección"
+            />
+            <div *ngIf="registerForm.get('direccion')?.touched && registerForm.get('direccion')?.invalid" class="text-danger">
+              Dirección es requerida.
+            </div>
+          </div>
+
+          <!-- Rol -->
+          <div class="form-group mb-3">
+            <label for="rol">Rol</label>
+            <select id="rol" formControlName="rol" class="form-control">
+              <option value="" disabled>Selecciona un rol</option>
+              <option value="Administrador">Administrador</option>
+              <option value="Vendedor">Vendedor</option>
+              <option value="Soporte al Cliente">Soporte al Cliente</option>
+              <option value="Usuario Regular">Usuario Regular</option>
+            </select>
+            <div *ngIf="registerForm.get('rol')?.touched && registerForm.get('rol')?.invalid" class="text-danger">
+              Selecciona un rol.
+            </div>
+          </div>
+          
+
+          <!-- Botones -->
+          <button type="submit" class="btn btn-danger w-100">Registrar</button>
+          <button type="button" class="btn btn-secondary w-100 mt-2" (click)="resetForm(registerForm)">Limpiar</button>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de Validación -->
+<div class="modal fade" id="validationModal" tabindex="-1" aria-labelledby="validationModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header bg-danger text-white">
+        <h5 class="modal-title" id="validationModalLabel">Formulario Incompleto</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        Por favor, completa todos los campos requeridos antes de enviar el formulario.
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-secondary" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
+
+
+
+  

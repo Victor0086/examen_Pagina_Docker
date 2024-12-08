@@ -1,0 +1,158 @@
+
+<!-- Barra superior con íconos de contacto y redes sociales -->
+<div class="container-fluid">
+  <div class="row top-bar">
+    <div class="col-12 col-md-6 contact-icons">
+      <i class="fas fa-map-marker-alt" data-tooltip="Valle del Elqui 1974"></i>
+      <i class="fas fa-envelope" data-tooltip="elpandacomida@gmail.com"></i>
+      <i class="fas fa-clock" data-tooltip="Horario de lunes a viernes de 8:30 a 17:00 Hrs"></i>
+      <i class="fas fa-phone" data-tooltip="225647675"></i>
+    </div>
+    <div class="col-12 col-md-6 social-icons text-md-end">
+      <a href="https://www.facebook.com/tu-pagina-de-facebook"><i class="fab fa-facebook"></i></a>
+      <a href="https://www.instagram.com/tu-pagina-de-instagram"><i class="fab fa-instagram"></i></a>
+      <a href="https://outlook.live.com"><i class="fas fa-envelope"></i></a>
+    </div>
+  </div>
+</div>
+
+
+<!-- Barra de navegación principal -->
+<nav class="navbar navbar-expand-lg main-nav">
+  <div class="container-fluid">
+    <!-- Logo de la página -->
+    <a class="navbar-brand logo" href="/">
+      <img src="../imagenes/PATAPANDA.png" alt="Logo de la página">
+    </a>
+
+    <!-- Buscador de productos -->
+    <div class="search-bar">
+      <select id="search-category" name="category">
+        <option value="all">Todo</option>
+      </select>
+      <input id="search-input" name="search" type="text" placeholder="Buscar...">
+      <button id="search-button" type="button">
+        <i class="fas fa-search"></i>
+      </button>
+    </div>
+
+    <!-- Opciones del usuario -->
+      <div class="d-flex user-options">
+        <!-- Saludo y opciones del Administrador -->
+        <div *ngIf="adminUser && !isLoggedIn" class="d-flex align-items-center">
+          <button class="btn btn-danger me-2" [routerLink]="['/admin']">
+            Hola, {{ adminUser }}
+          </button>
+          <button class="btn btn-danger" (click)="logout()">Cerrar Sesión</button>
+        </div>
+
+        <!-- Saludo y opciones del Usuario Regular -->
+        <div *ngIf="isLoggedIn && !adminUser" class="d-flex align-items-center">
+          <button class="btn btn-danger me-2" (click)="goToProfile()">
+            Hola, {{ username }}
+          </button>
+          <button class="btn btn-danger" (click)="logout()">Cerrar Sesión</button>
+        </div>
+
+        <!-- Opción de Acceso/Registro si no hay sesión activa -->
+        <div *ngIf="!isLoggedIn && !adminUser" class="d-flex align-items-center">
+          <button class="btn btn-outline-primary me-2 login-btn" data-bs-toggle="modal" data-bs-target="#loginModal">
+            Acceder / Registrarse
+          </button>
+        </div>
+
+        <!-- Carrito de compras -->
+        <a [routerLink]="['/carro']" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cartCount }}
+          </span>
+        </a>
+      </div>
+
+  </div>
+</nav>
+
+
+
+
+<div class="container mt-3">
+  <h2>Seguimiento de Pedidos</h2>
+  <form (ngSubmit)="trackOrder()">
+    <div class="form-group">
+      <label for="orderNumber">Número de seguimiento:</label>
+      <input
+        id="orderNumber"
+        type="text"
+        class="form-control"
+        [(ngModel)]="orderNumber"
+        name="orderNumber"
+        placeholder="Ingresa tu número de pedido"
+        required
+      />
+    </div>
+    <button type="submit" class="btn btn-danger mt-2">Buscar Pedido</button>
+  </form>
+
+  <div *ngIf="errorMessage" class="alert alert-danger mt-3">
+    {{ errorMessage }}
+  </div>
+
+  <div *ngIf="searchResult.length > 0" class="alert alert-success mt-3">
+    <h3>Pedido encontrado:</h3>
+    <ul>
+      <li *ngFor="let order of searchResult">
+        <strong>Producto:</strong> {{ order.producto }},
+        <strong>Tracking Number:</strong> {{ order.trackingNumber }}
+      </li>
+    </ul>
+  </div>
+</div>
+
+
+
+
+
+<!-- Pie de página -->
+<footer class="footer mt-5 py-3 bg-dark text-white">
+  <div class="container">
+      <div class="row">
+          <!-- Información de contacto -->
+          <div class="col-md-4">
+              <h5>Contacto</h5>
+              <ul class="list-unstyled">
+                  <li><i class="fas fa-map-marker-alt"></i> Valle del Elqui 1974, Santiago</li>
+                  <li><i class="fas fa-phone"></i> +56 225647675</li>
+                  <li><i class="fas fa-envelope"></i> 
+                      <a href="mailto:{{ email }}">{{ email }}</a>
+                  </li>
+              </ul>
+          </div>
+          <!-- Enlaces -->
+          <div class="col-md-4">
+              <h5>Enlaces Útiles</h5>
+              <ul class="list-unstyled">
+                  <li><a href="index.html" class="text-white">Inicio</a></li>
+                  <li><a href="alimentos.html" class="text-white">Alimentos</a></li>
+                  <li><a href="juguetes.html" class="text-white">Juguetes</a></li>
+                  <li><a href="accesorios.html" class="text-white">Accesorios</a></li>
+                  <li><a href="contacto.html" class="text-white">Contacto</a></li>
+              </ul>
+          </div>
+          <!-- Redes sociales -->
+          <div class="col-md-4">
+              <h5>Síguenos</h5>
+              <ul class="list-unstyled">
+                  <li><a href="https://www.facebook.com/tu-pagina-de-facebook" class="text-white"><i class="fab fa-facebook"></i> Facebook</a></li>
+                  <li><a href="https://www.instagram.com/tu-pagina-de-instagram" class="text-white"><i class="fab fa-instagram"></i> Instagram</a></li>
+                  <li><a href="https://twitter.com/tu-pagina-de-twitter" class="text-white"><i class="fab fa-twitter"></i> Twitter</a></li>
+              </ul>
+          </div>
+      </div>
+      <div class="row mt-3">
+          <div class="col text-center">
+              <p>&copy; 2024 Venta de Alimentos El Panda. Todos los derechos reservados.</p>
+          </div>
+      </div>
+  </div>
+</footer>

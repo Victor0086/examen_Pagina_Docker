@@ -1,0 +1,16 @@
+/* Estilo para los enlaces de la barra de categorías */
+.category-link {
+    display: inline-block;
+    color: #FFFFFF;
+    background-color: #B21A1A;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap; 
+  }
+  
+  .category-link i {
+    margin-left: 5px;
+  }
+  

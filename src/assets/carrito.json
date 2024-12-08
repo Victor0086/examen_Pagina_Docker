@@ -1,0 +1,20 @@
+[
+  {
+    "producto": "Fit Formula Adulto 20 kg",
+    "precio": 45,
+    "cantidad": 2,
+    "total": 90,
+    "fecha": "25/11/2024",
+    "trackingNumber": "ABC123DEF",
+    "status": "En proceso"
+  },
+  {
+    "producto": "Cat Chow Adulto 10 kg",
+    "precio": 25,
+    "cantidad": 1,
+    "total": 25,
+    "fecha": "25/11/2024",
+    "trackingNumber": "GHI456JKL",
+    "status": "En proceso"
+  }
+]

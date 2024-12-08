@@ -1,0 +1,235 @@
+/* Estilos generales */
+
+
+/* Estilos para el contenedor */
+
+
+/* Estilos para los formularios */
+
+
+/* Estilos para las tarjetas */
+.card {
+    border-radius: 10px;
+    margin-bottom: 20px;
+}
+
+/* Estilo para el encabezado de las tarjetas */
+.card-header {
+    background-color: #B21A1A;
+    color: #fff;
+    font-size: 1.5rem;
+}
+
+/* Estilo para el botón de alternancia */
+.toggle-btn {
+    cursor: pointer;
+    color: #B21A1A;
+    text-decoration: underline;
+}
+
+/* Estilos para los botones de acceso y registro */
+.btn-primary, .btn-secondary {
+    background-color: #B21A1A;
+    border-color: #B21A1A;
+}
+
+/* Estilos para la barra superior, navegación principal y barra de categorías */
+.top-bar, .main-nav, .category-bar {
+    background-color: #B21A1A;
+    color: #FFFFFF;
+    display: flex;
+    justify-content: space-between;
+    padding: 10px 20px;
+    align-items: center;
+}
+
+/* Estilos para los íconos de contacto */
+.contact-icons i {
+    margin-right: 30px;
+    position: relative;
+    cursor: pointer;
+}
+
+/* Estilo para los tooltips */
+.contact-icons i::after {
+    content: attr(data-tooltip);
+    position: absolute;
+    top: 100%;
+    left: 50%;
+    transform: translateX(-50%);
+    background-color: #111111;
+    color: #fff;
+    padding: 5px 10px;
+    border-radius: 5px;
+    white-space: normal; 
+    max-width: 200px; 
+    opacity: 0;
+    visibility: hidden;
+    transition: opacity 0.3s;
+    z-index: 1000;
+}
+
+.contact-icons i:hover::after {
+    opacity: 1;
+    visibility: visible;
+}
+
+/* Estilo para los botones de servicio y mayoristas */
+.btn-mayoristas, .btn-servicio {
+    background-color: #D12828;
+    color: white;
+    padding: 5px 10px;
+    border: none;
+    cursor: pointer;
+    margin-right: 10px;
+}
+
+/* Estilo para los íconos de redes sociales */
+.social-icons a {
+    color: #FFFFFF;
+    margin-left: 10px;
+    text-decoration: none;
+    font-size: 1.2em;
+}
+
+/* Estilo para la barra de navegación principal */
+.main-nav {
+    align-items: center;
+    background-color: #B21A1A; 
+}
+
+/* Estilo para el logo */
+.logo img {
+    height: 50px;
+}
+
+/* Estilo para el buscador */
+.search-bar {
+    display: flex;
+    align-items: center;
+    flex: 1; 
+    margin: 0 20px; 
+}
+
+.search-bar select, .search-bar input, .search-bar button {
+    margin: 0 5px;
+    padding: 5px;
+    border: none;
+    border-radius: 5px;
+}
+
+.search-bar button {
+    background-color: #FFFFFF;
+    color: #B21A1A;
+    cursor: pointer;
+}
+
+/*Con esto Expando la barra de búsqueda */
+.search-bar input {
+    width: 100%; 
+}
+
+/* Estilo para los botones de acceso y carrito */
+.user-options {
+    display: flex;
+    align-items: center;
+}
+
+.user-options .login-btn, .user-options .cart-btn {
+    background-color: #D12828;
+    color: white;
+}
+
+/* Estilo para los enlaces de la barra de categorías */
+.category-link {
+    display: inline-block;
+    color: #FFFFFF;
+    background-color: #B21A1A;
+    padding: 10px 20px;
+    border-radius: 5px;
+    text-decoration: none;
+    font-weight: bold;
+    white-space: nowrap; 
+}
+
+.category-link i {
+    margin-left: 5px;
+}
+
+/* Carrusel */
+.carousel-inner {
+    height: 400px;
+    width: 100%; 
+    display: flex;
+    align-items: auto; 
+    justify-content: auto; 
+}
+
+.carousel-item {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    
+}
+
+.carousel-inner img {
+    width: 100%; 
+    height: 100%;
+    object-fit: fixed; 
+}
+
+/* Carrusel de Precios*/
+
+.product-carousel-container {
+    display: flex;
+    overflow-x: scroll;
+    scroll-snap-type: x mandatory;
+    -webkit-overflow-scrolling: touch;
+    cursor: grab;
+}
+.product-carousel-item {
+    flex: none;
+    scroll-snap-align: start;
+    width: 300px;
+    margin-right: 16px;
+    border: 1px solid #ddd;
+    border-radius: 8px;
+    padding: 16px;
+    background-color: #fff;
+}
+.product-carousel-item img {
+    width: 100%;
+    height: 65%;
+    object-fit: cover;
+    border-bottom: 1px solid #ddd;
+    margin-bottom: 8px;
+}
+.product-info {
+    text-align: center;
+}
+.product-info h3 {
+    font-size: 1.2em;
+    margin: 8px 0;
+}
+.product-info p {
+    margin: 4px 0;
+}
+.product-info .price {
+    font-size: 1.1em;
+    color: #f00;
+}
+.product-info .old-price {
+    text-decoration: line-through;
+    color: #999;
+}
+
+/* Mensaje de pagina de usuario al iniciar sesion  */
+.welcome-message {
+    font-size: 40px; 
+}
+
+  /* Estilo para el encabezado de Registro de usuario en el admin  */
+  .card-header {
+    background-color: red;
+    color: white; 
+}
