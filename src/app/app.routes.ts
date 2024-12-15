@@ -6,7 +6,6 @@ import { SegPedidoComponent } from './components/seg-pedido/seg-pedido.component
 import { UserComponent } from './components/user/user.component';
 import { ListaPersonasComponent } from './components/lista-personas/lista-personas.component';
 
-
 import { PerroAlimentosComponent } from './components/productos/perro-alimentos/perro-alimentos.component';
 import { PerroJuguetesComponent } from './components/productos/perro-juguetes/perro-juguetes.component';
 import { PerroAccesoriosComponent } from './components/productos/perro-accesorios/perro-accesorios.component';
@@ -21,6 +20,7 @@ export const routes: Routes = [
   { path: 'seg-pedido', component: SegPedidoComponent },
   { path: 'user', component: UserComponent },
   { path: 'lista-personas', component: ListaPersonasComponent },
+
 
   // Rutas para los componentes de Perro
   { path: 'perro/alimentos', component: PerroAlimentosComponent },

@@ -21,7 +21,7 @@ COPY . .
 
 # Construir la aplicación Angular
 
-RUN npm run build -- --prod
+RUN npm run build
 
 
 

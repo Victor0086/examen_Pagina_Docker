@@ -1,11 +1,13 @@
 import { Component } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { CommonModule } from '@angular/common';
+import { JsonService } from '../../services/json.service';
+import { HttpClientModule } from '@angular/common/http'; 
 
 @Component({
   selector: 'app-pruebas-unitarias',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule],
+  imports: [CommonModule, ReactiveFormsModule,HttpClientModule],
   templateUrl: './pruebas-unitarias.component.html',
   styleUrls: ['./pruebas-unitarias.component.css']
 })

@@ -15,6 +15,7 @@
   </div>
 </div>
 
+
 <!-- Barra de navegación principal -->
 <nav class="navbar navbar-expand-lg main-nav">
   <div class="container-fluid">
@@ -59,17 +60,78 @@
         </button>
       </div>
 
-      <!-- Carrito de compras -->
-      <a [routerLink]="['/carro']" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
-        <i class="fas fa-shopping-cart"></i>
-        <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
-          {{ cartCount }}
-        </span>
-      </a>
+      <!-- Carrito de compras con hover -->
+      <div class="cart-container position-relative">
+        <a [routerLink]="['/carro']" id="cart-icon" class="btn btn-outline-secondary cart-btn position-relative">
+          <i class="fas fa-shopping-cart"></i>
+          <span class="cart-count position-absolute top-0 start-100 translate-middle badge rounded-pill bg-danger">
+            {{ cartCount }}
+          </span>
+        </a>
+        <div id="cart-preview" class="cart-preview">
+          <ul *ngIf="cartItems.length > 0">
+            <li *ngFor="let item of cartItems" class="cart-item">
+              <img [src]="item.image" alt="{{ item.name }}" class="cart-item-img">
+              <div class="cart-item-details">
+                <span class="cart-item-name">{{ item.name }}</span>
+                <span class="cart-item-price">{{ item.price | currency }}</span>
+                <span class="cart-item-quantity">Cantidad: {{ item.quantity }}</span>
+              </div>
+            </li>
+          </ul>
+          <div *ngIf="cartItems.length === 0" class="empty-cart-message">
+            No hay productos en el carrito.
+          </div>
+          <div class="cart-total">
+            <p>Subtotal (sin IVA): <strong>{{ cartTotal.sinIVA | currency }}</strong></p>
+            <p>IVA (19%): <strong>{{ cartTotal.iva | currency }}</strong></p>
+            <p>Total (con IVA): <strong>{{ cartTotal.conIVA | currency }}</strong></p>
+          </div>
+          
+          
+        </div>
+      </div>
     </div>
-
   </div>
 </nav>
+
+<!-- Modal para inicio de sesión exitoso -->
+<div class="modal fade" id="loginSuccessModal" tabindex="-1" aria-labelledby="loginSuccessModalLabel" aria-hidden="true">
+  <div class="modal-dialog">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="loginSuccessModalLabel">Inicio de Sesión</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¡Inicio de sesión como administrador exitoso!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Modal de cierre de sesión -->
+<div class="modal fade" id="logoutSuccessModal" tabindex="-1" aria-labelledby="logoutSuccessModalLabel" aria-hidden="true">
+  <div class="modal-dialog modal-dialog-centered">
+    <div class="modal-content">
+      <div class="modal-header">
+        <h5 class="modal-title" id="logoutSuccessModalLabel">Cierre de Sesión</h5>
+        <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Cerrar"></button>
+      </div>
+      <div class="modal-body">
+        ¡Has cerrado sesión exitosamente!
+      </div>
+      <div class="modal-footer">
+        <button type="button" class="btn btn-primary" data-bs-dismiss="modal">Aceptar</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+
 
 
 <!-- Modal de inicio de sesión -->
@@ -212,129 +274,198 @@
 </div>
 
 
-
-    <!-- Primer Carrusel de imágenes -->
-    <div id="carouselExampleIndicators" class="carousel slide" data-bs-ride="carousel">
-        <div class="carousel-indicators">
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="1" aria-label="Slide 2"></button>
-            <button type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide-to="2" aria-label="Slide 3"></button>
-        </div>
-        <div class="carousel-inner">
-            <div class="carousel-item active">
-                <img src="../imagenes/1_IMAGENCARRUSEL.png" class="d-block" alt="Imagen 1">
-            </div>
-            <div class="carousel-item">
-                <img src="../imagenes/perros-alimentospng.webp" class="d-block" alt="Imagen 2">
-            </div>
-            <div class="carousel-item">
-                <img src="../imagenes/gato-comiendo.jpg" class="d-block" alt="Imagen 3">
-            </div>
-        </div>
-        <button class="carousel-control-prev" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="prev">
-            <span class="carousel-control-prev-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Anterior</span>
-        </button>
-        <button class="carousel-control-next" type="button" data-bs-target="#carouselExampleIndicators" data-bs-slide="next">
-            <span class="carousel-control-next-icon" aria-hidden="true"></span>
-            <span class="visually-hidden">Siguiente</span>
-        </button>
+<!-- Primer Carrusel Automático -->
+<div id="auto-carousel" class="carousel slide" data-bs-ride="carousel">
+  <div class="carousel-indicators">
+    <button type="button" data-bs-target="#auto-carousel" data-bs-slide-to="0" class="active" aria-current="true" aria-label="Slide 1"></button>
+    <button type="button" data-bs-target="#auto-carousel" data-bs-slide-to="1" aria-label="Slide 2"></button>
+    <button type="button" data-bs-target="#auto-carousel" data-bs-slide-to="2" aria-label="Slide 3"></button>
+  </div>
+  <div class="carousel-inner">
+    <div class="carousel-item active">
+      <img src="../imagenes/1_IMAGENCARRUSEL.png" class="d-block" alt="Imagen 1">
     </div>
-
-<!-- Segundo Carrusel de productos -->
-<div class="container mt-5">
-    <div class="product-carousel-container">
-        <!-- Primer producto -->
-        <div class="product-carousel-item">
-            <img src="../imagenes/FitAdulto.jpg" alt="Producto 1">
-            <div class="product-info">
-                <h3>Alimento para perros</h3>
-                <p>Fit Formula Adulto 20 kg</p>
-                <p class="old-price">$50.000</p>
-                <p class="price">$45.000</p>
-                <button class="btn btn-outline-success mt-2 add-to-cart" 
-                        (click)="addToCart({id: 1, name: 'Fit Formula Adulto 20 kg', price: 45.00})">
-                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                </button>
-            </div>
-        </div>
-
-        <!-- Segundo producto -->
-        <div class="product-carousel-item">
-            <img src="../imagenes/Gati15kg.jpg" alt="Producto 2">
-            <div class="product-info">
-                <h3>Alimento para gatos</h3>
-                <p>Cat Chow Adulto 10 kg</p>
-                <p class="old-price">$30.000</p>
-                <p class="price">$25.000</p>
-                <button class="btn btn-outline-success mt-2 add-to-cart" 
-                        (click)="addToCart({id: 2, name: 'Cat Chow Adulto 10 kg', price: 25.00})">
-                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                </button>
-            </div>
-        </div>
-
-        <!-- Tercer producto -->
-        <div class="product-carousel-item">
-            <img src="../imagenes/Gaucho15kg.jpg" alt="Producto 3">
-            <div class="product-info">
-                <h3>Alimento para gatos</h3>
-                <p>Gaucho 15kg</p>
-                <p class="old-price">$50.000</p>
-                <p class="price">$35.000</p>
-                <button class="btn btn-outline-success mt-2 add-to-cart" 
-                        (click)="addToCart({id: 3, name: 'Gaucho 15kg', price: 35.00})">
-                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                </button>
-            </div>
-        </div>
-
-        <!-- Cuarto producto -->
-        <div class="product-carousel-item">
-            <img src="../imagenes/RazaGato10kg.jpg" alt="Producto 4">
-            <div class="product-info">
-                <h3>Alimento para gatos</h3>
-                <p>Raza Gatos 15kg</p>
-                <p class="old-price">$30.000</p>
-                <p class="price">$25.000</p>
-                <button class="btn btn-outline-success mt-2 add-to-cart" 
-                        (click)="addToCart({id: 4, name: 'Raza Gatos 15kg', price: 25.00})">
-                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                </button>
-            </div>
-        </div>
-
-        <!-- Quinto producto -->
-        <div class="product-carousel-item">
-            <img src="../imagenes/Gaucho15kg.jpg" alt="Producto 5">
-            <div class="product-info">
-                <h3>Alimento para perros</h3>
-                <p>Fit Formula Adulto 20 kg</p>
-                <p class="old-price">$50.000</p>
-                <p class="price">$45.000</p>
-                <button class="btn btn-outline-success mt-2 add-to-cart" 
-                        (click)="addToCart({id: 5, name: 'Fit Formula Adulto 20 kg', price: 45.00})">
-                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                </button>
-            </div>
-        </div>
-
-        <!-- Sexto producto -->
-        <div class="product-carousel-item">
-            <img src="../imagenes/RazaGato10kg.jpg" alt="Producto 6">
-            <div class="product-info">
-                <h3>Alimento para gatos</h3>
-                <p>Cat Chow Adulto 10 kg</p>
-                <p class="old-price">$30.000</p>
-                <p class="price">$25.000</p>
-                <button class="btn btn-outline-success mt-2 add-to-cart" 
-                        (click)="addToCart({id: 6, name: 'Cat Chow Adulto 10 kg', price: 25.00})">
-                    <i class="fas fa-shopping-cart"></i> Agregar al carrito
-                </button>
-            </div>
-        </div>
+    <div class="carousel-item">
+      <img src="../imagenes/perros-alimentospng.webp" class="d-block" alt="Imagen 2">
     </div>
+    <div class="carousel-item">
+      <img src="../imagenes/gato-comiendo.jpg" class="d-block" alt="Imagen 3">
+    </div>
+  </div>
+  <button class="carousel-control-prev" type="button" data-bs-target="#auto-carousel" data-bs-slide="prev">
+    <span class="carousel-control-prev-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Anterior</span>
+  </button>
+  <button class="carousel-control-next" type="button" data-bs-target="#auto-carousel" data-bs-slide="next">
+    <span class="carousel-control-next-icon" aria-hidden="true"></span>
+    <span class="visually-hidden">Siguiente</span>
+  </button>
 </div>
+
+
+<div class="container-fluid mt-5 position-relative">
+  <!-- Flecha izquierda -->
+  <button class="carousel-arrow left-arrow" (click)="scrollCarousel('left')">
+    <i class="fas fa-chevron-left"></i>
+  </button>
+
+  <!-- Contenedor del grid de productos -->
+  <div class="product-grid-container" id="product-carousel">
+
+    <!-- Primer producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/FitAdulto.jpg" class="product-img" alt="Fit Formula Adulto 20 kg">
+      <div class="product-info">
+        <h3>Fit Formula Adulto 20 kg</h3>
+        <p>Alimento para perros</p>
+        <p class="old-price">{{ 50000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 45000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart" 
+          (click)="addToCart({id: 1, name: 'Fit Formula Adulto 20 kg', price: 45000, image: '/imagenes/FitAdulto.jpg'})">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Segundo producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/Gati15kg.jpg" class="product-img" alt="Cat Chow Adulto 10 kg">
+      <div class="product-info">
+        <h3>Cat Chow Adulto 10 kg</h3>
+        <p>Alimento para gatos</p>
+        <p class="old-price">{{ 30000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 25000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart" 
+          (click)="addToCart({id: 2, name: 'Cat Chow Adulto 10 kg', price: 25000, image: '/imagenes/Gati15kg.jpg'})">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Tercer producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/Gaucho15kg.jpg" class="product-img" alt="Gaucho 15kg">
+      <div class="product-info">
+        <h3>Gaucho 15kg</h3>
+        <p>Alimento para gatos</p>
+        <p class="old-price">{{ 50000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 35000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart" 
+          (click)="addToCart({id: 3, name: 'Gaucho 15kg', price: 35000, image: '/imagenes/Gaucho15kg.jpg'})">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Cuarto producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/RazaGato10kg.jpg" class="product-img" alt="Raza Gatos 15kg">
+      <div class="product-info">
+        <h3>Raza Gatos 15kg</h3>
+        <p>Alimento para gatos</p>
+        <p class="old-price">{{ 30000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 25000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart" 
+          (click)="addToCart({id: 4, name: 'Raza Gatos 15kg', price: 25000, image: '/imagenes/RazaGato10kg.jpg'})">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Quinto producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/Alimento-Perro-Cachorro-Champion-Dog-Carne-Pollo-y-Leche-3kg.png" class="product-img" alt="Master Dog Cachorros 15kg">
+      <div class="product-info">
+        <h3>Master Dog Cachorros 15kg</h3>
+        <p>Alimento para perros</p>
+        <p class="old-price">{{ 30000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 25000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart" 
+          (click)="addToCart({id: 5, name: 'Master Dog Cachorros 15kg', price: 25000, image: '/imagenes/Alimento-Perro-Cachorro-Champion-Dog-Carne-Pollo-y-Leche-3kg.png'})">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Sexto producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/alimento_doko_carne_pollo.webp" class="product-img" alt="Doko Carne y Pollo 15kg">
+      <div class="product-info">
+        <h3>Doko Carne y Pollo 15kg</h3>
+        <p>Alimento para perros</p>
+        <p class="old-price">{{ 30000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 25000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Séptimo producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/alimento_cannes_carne_cereales.webp" class="product-img" alt="Cannes Carne y Cereales 15kg">
+      <div class="product-info">
+        <h3>Cannes Carne y Cereales 15kg</h3>
+        <p>Alimento para perros</p>
+        <p class="old-price">{{ 30000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 25000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Octavo producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/alimento_cachupin_adulto.webp" class="product-img" alt="Cachupin Carne 15kg">
+      <div class="product-info">
+        <h3>Cachupin Carne 15kg</h3>
+        <p>Alimento para perros</p>
+        <p class="old-price">{{ 30000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 25000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Noveno producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/Alimento-Perro-Adulto-Pedigree-High-Protein-Carne-y-Pollo-7.2-kg.webp" class="product-img" alt="Royal Canin Puppy 12kg">
+      <div class="product-info">
+        <h3>Alimento-Perro-Adulto-Pedigree-High-Protein-Carne-y-Pollo-7.2-kg</h3>
+        <p>Alimento para perros</p>
+        <p class="old-price">{{ 90000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 85000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+
+    <!-- Décimo producto -->
+    <div class="product-carousel-item">
+      <img src="/imagenes/Alimento-Perro-Cachorro-Champion-Dog-Carne-Pollo-y-Leche-3kg.png" class="product-img" alt="Nutra Nuggets Adult 15kg">
+      <div class="product-info">
+        <h3>Alimento-Perro-Cachorro-Champion-Dog-Carne-Pollo-y-Leche-3kg</h3>
+        <p>Alimento para perros</p>
+        <p class="old-price">{{ 70000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <p class="price">{{ 65000 | currency:'CLP':'symbol':'1.0-0' }}</p>
+        <button class="btn btn-outline-success mt-2 add-to-cart">
+          <i class="fas fa-shopping-cart"></i> Agregar al carrito
+        </button>
+      </div>
+    </div>
+  </div>
+
+  <!-- Flecha derecha -->
+  <button class="carousel-arrow right-arrow" (click)="scrollCarousel('right')">
+    <i class="fas fa-chevron-right"></i>
+  </button>
+</div>
+
+
+
 
 
 <!-- Pie de página -->

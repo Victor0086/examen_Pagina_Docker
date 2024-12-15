@@ -1,0 +1,26 @@
+[
+  {
+    "nombreCompleto": "victor nuñez",
+    "nombreUsuario": "victor",
+    "email": "victor_retamal@outlook.cl",
+    "password": "123456",
+    "fechaNacimiento": "1990-01-01",
+    "direccion": "Calle Falsa 123"
+  },
+  {
+    "nombreCompleto": "victor nuñez",
+    "nombreUsuario": "victor",
+    "email": "snake_retamal@outlook.cl",
+    "password": "123456",
+    "fechaNacimiento": "1990-01-01",
+    "direccion": "Calle Falsa 123"
+  },
+  {
+    "nombreCompleto": "andrea gonzalez",
+    "nombreUsuario": "yesi",
+    "email": "snake_retamal@outlook.cl",
+    "password": "654321",
+    "fechaNacimiento": "1992-02-02",
+    "direccion": "Calle Falsa 456"
+  }
+]

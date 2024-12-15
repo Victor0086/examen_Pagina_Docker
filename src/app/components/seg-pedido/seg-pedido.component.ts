@@ -51,23 +51,23 @@ export class SegPedidoComponent implements OnInit {
 
   trackOrder(): void {
     console.log('Buscando pedido con número:', this.orderNumber);
-
+  
     if (!this.orderNumber) {
       this.errorMessage = 'Por favor, ingresa un número de seguimiento válido.';
       this.searchResult = [];
       return;
     }
-
+  
     // Cargar pedidos desde S3 y buscar el pedido específico
-    this.jsonService.getCarritoData().subscribe({
+    this.jsonService.getPurchases().subscribe({
       next: (data) => {
-        console.log('Datos cargados desde S3:', data);
+        console.log('Datos cargados desde purchases.json:', data);
         this.orders = data;
-
+  
         const order = this.orders.find(
           (o: any) => o.trackingNumber === this.orderNumber
         );
-
+  
         if (order) {
           console.log('Pedido encontrado:', order);
           this.searchResult = [order];
@@ -79,12 +79,12 @@ export class SegPedidoComponent implements OnInit {
         }
       },
       error: (err) => {
-        console.error('Error al cargar datos desde S3:', err);
+        console.error('Error al cargar datos desde purchases.json:', err);
         this.errorMessage = 'No se pudo cargar los datos desde el servidor.';
       },
     });
   }
-
+  
   // Validar si un administrador está conectado
   private checkAdminSession(): void {
     const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';

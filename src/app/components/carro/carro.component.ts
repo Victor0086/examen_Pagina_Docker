@@ -2,19 +2,28 @@ import { Component, OnInit, ViewChild, ElementRef, OnDestroy } from '@angular/co
 import { CommonModule } from '@angular/common';
 import { RouterModule, Router } from '@angular/router';
 import { FormsModule, ReactiveFormsModule, FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { JsonService } from '../../services/json.service';
+import { HttpClientModule } from '@angular/common/http';
 
 declare global {
   interface Window {
     bootstrap: any;
+  }
+
+  interface CartTotal {
+    sinIVA: string;
+    iva: string;
+    conIVA: string;
   }
 }
 
 @Component({
   selector: 'app-carro',
   standalone: true,
-  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule],
+  imports: [CommonModule, RouterModule, FormsModule, ReactiveFormsModule,HttpClientModule],
   templateUrl: './carro.component.html',
   styleUrls: ['./carro.component.css'],
+  providers: [JsonService]
 })
 export class CarroComponent implements OnInit, OnDestroy {
   @ViewChild('paymentModal') paymentModal: ElementRef | undefined;
@@ -22,7 +31,7 @@ export class CarroComponent implements OnInit, OnDestroy {
   password: string = '';
   cart: any[] = [];
   cartCount: number = 0;
-  cartTotal: number = 0;
+  cartItems: any[] = [];
   cartEmptyMessage: boolean = false;
   subTotal: number = 0;
   discount: number = 0;
@@ -35,10 +44,10 @@ export class CarroComponent implements OnInit, OnDestroy {
   username: string | null = null;
   isLoggedIn: boolean = false;
   loginForm!: FormGroup;
+  cartTotal: CartTotal = { sinIVA: '0.00', iva: '0.00', conIVA: '0.00' };
+  paymentProcessing: boolean = false;
 
-  constructor(
-    private router: Router,
-    private fb: FormBuilder
+  constructor(private router: Router,private fb: FormBuilder,private jsonService: JsonService
   ) {}
 
   ngOnInit(): void {
@@ -63,20 +72,19 @@ export class CarroComponent implements OnInit, OnDestroy {
     return typeof window !== 'undefined' && typeof window.localStorage !== 'undefined';
   }
 
-    // Validar si un administrador está conectado
-    private checkAdminSession(): void {
-      const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
-      const loggedInUser = localStorage.getItem('loggedInUser');
-  
-      if (isAdminLoggedIn && loggedInUser) {
-        this.adminUser = loggedInUser; // Nombre del administrador
-        this.username = null; // Limpiar usuario estándar
-        this.isLoggedIn = true;
-        console.log('Admin logueado:', this.adminUser);
-      } else {
-        this.adminUser = null;
-      }
+  private checkAdminSession(): void {
+    const isAdminLoggedIn = localStorage.getItem('isAdminLoggedIn') === 'true';
+    const loggedInUser = localStorage.getItem('loggedInUser');
+
+    if (isAdminLoggedIn && loggedInUser) {
+      this.adminUser = loggedInUser;
+      this.username = null;
+      this.isLoggedIn = true;
+      console.log('Admin logueado:', this.adminUser);
+    } else {
+      this.adminUser = null;
     }
+  }
 
   private checkUserSession(): void {
     if (this.isBrowser()) {
@@ -111,11 +119,20 @@ export class CarroComponent implements OnInit, OnDestroy {
   }
 
   private updateCartDetails(): void {
+    const totalSinIVA = this.cart.reduce(
+      (total, item) => total + item.price * item.quantity,
+      0
+    );
+    const iva = totalSinIVA * 0.19; // Calcula el IVA (19%)
+    const totalConIVA = totalSinIVA + iva;
+
+    this.cartTotal = {
+      sinIVA: totalSinIVA.toFixed(2),
+      iva: iva.toFixed(2),
+      conIVA: totalConIVA.toFixed(2),
+    };
+
     this.cartEmptyMessage = this.cart.length === 0;
-    this.subTotal = this.cart.reduce((total, item) => total + item.price * item.quantity, 0);
-    this.discount = this.calculateDiscount();
-    this.tax = this.calculateTax(this.subTotal - this.discount);
-    this.cartTotal = this.subTotal - this.discount + this.tax;
     this.cartCount = this.cart.reduce((total, item) => total + item.quantity, 0);
   }
 
@@ -165,12 +182,20 @@ export class CarroComponent implements OnInit, OnDestroy {
   }
 
   finalizePurchase(): void {
+    const currentUser = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (!currentUser || !currentUser.email) {
+      alert('Debes iniciar sesión para finalizar la compra.');
+      return;
+    }
+  
     if (this.cart.length === 0) {
       alert('El carrito está vacío.');
       return;
     }
+  
     this.openPaymentModal();
   }
+  
 
   openPaymentModal(): void {
     if (this.paymentModal) {
@@ -180,20 +205,83 @@ export class CarroComponent implements OnInit, OnDestroy {
     }
   }
 
+ 
+
   processPayment(): void {
-    alert('Procesando el pago...');
-    this.cart = [];
-    localStorage.removeItem('cart');
-    this.updateCartDetails();
-    this.paymentConfirmed = true;
+    const currentUser = JSON.parse(localStorage.getItem('userData') || '{}');
+    if (!currentUser || !currentUser.email) {
+      alert('Debes iniciar sesión para finalizar la compra.');
+      return;
+    }
+  
+    if (this.cart.length === 0) {
+      alert('El carrito está vacío. No se puede procesar el pago.');
+      return;
+    }
+  
+    this.paymentProcessing = true; // Activar estado de procesamiento
+    console.log('Procesando el pago para el carrito:', this.cart);
+  
+    // Obtener compras existentes de S3
+    this.jsonService.getPurchases().subscribe({
+      next: (existingPurchases: any[]) => {
+        console.log('Compras existentes obtenidas de S3:', existingPurchases);
+  
+        // Crear las nuevas compras
+        const newPurchases = this.cart.map((item: any) => ({
+          producto: item.name,
+          precio: item.price,
+          cantidad: item.quantity,
+          total: item.price * item.quantity,
+          fecha: new Date().toISOString(),
+          status: 'Pendiente',
+          trackingNumber: this.generateTrackingNumber(),
+          userEmail: currentUser.email,
+        }));
+  
+        console.log('Nuevas compras a agregar:', newPurchases);
+  
+        // Actualizar el listado de compras
+        const updatedPurchases = [...(existingPurchases || []), ...newPurchases];
+  
+        // Guardar las compras actualizadas en S3
+        this.jsonService.savePurchases(updatedPurchases).subscribe({
+          next: () => {
+            console.log('Compras guardadas exitosamente en S3:', updatedPurchases);
+  
+            // Sincronizar con LocalStorage
+            localStorage.setItem('purchases', JSON.stringify(updatedPurchases));
+            console.log('Compras sincronizadas con LocalStorage.');
+  
+            // Limpiar el carrito
+            this.cart = [];
+            localStorage.removeItem('cart');
+            this.updateCartDetails();
+  
+            this.paymentProcessing = false; // Desactivar estado de procesamiento
+            alert('Compra realizada con éxito. Verifica tus compras.');
+          },
+          error: (err: any) => {
+            console.error('Error al guardar las compras en S3:', err);
+            this.paymentProcessing = false;
+            alert('Hubo un error al guardar las compras en S3. Por favor, inténtalo más tarde.');
+          },
+        });
+      },
+      error: (err: any) => {
+        console.error('Error al obtener las compras desde S3:', err);
+        this.paymentProcessing = false;
+        alert('Hubo un error al obtener las compras existentes. Por favor, inténtalo más tarde.');
+      },
+    });
   }
-
-  calculateDiscount(): number {
-    return this.subTotal * 0.1;
-  }
-
-  calculateTax(amount: number): number {
-    return amount * 0.19;
+  
+  
+  
+  
+  
+  private generateTrackingNumber(): string {
+    return 'TRK-' + Math.random().toString(36).substr(2, 9).toUpperCase();
   }
 
   removeFromCart(productName: string): void {

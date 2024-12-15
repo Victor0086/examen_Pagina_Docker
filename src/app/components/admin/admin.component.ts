@@ -2,13 +2,16 @@ import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, ReactiveFormsModule } from '@angular/forms';
 import { RouterModule, Router } from '@angular/router';
 import { CommonModule } from '@angular/common';
+import { HttpClientModule } from '@angular/common/http';
+import { JsonService } from '../../services/json.service';
 
 @Component({
   selector: 'app-admin',
   standalone: true,
-  imports: [CommonModule, ReactiveFormsModule, RouterModule],
+  imports: [CommonModule, ReactiveFormsModule, RouterModule,HttpClientModule],
   templateUrl: './admin.component.html',
   styleUrls: ['./admin.component.css'],
+  providers: [JsonService]
 })
 export class AdminComponent implements OnInit {
   myForm!: FormGroup; 
@@ -20,8 +23,9 @@ export class AdminComponent implements OnInit {
   purchases: any[] = [];
   username: string | null = null; 
   isLoggedIn: boolean = false;
+  
 
-  constructor(private router: Router, private fb: FormBuilder) {}
+  constructor(private router: Router, private fb: FormBuilder,private jsonService: JsonService) {}
 
   ngOnInit(): void {
     this.checkAdminSession();
@@ -105,59 +109,106 @@ export class AdminComponent implements OnInit {
       alert('Por favor, ingresa las credenciales correctamente.');
       return;
     }
-
+  
     const { username, password } = this.loginForm.value;
-
-    if (username === 'admin' && password === 'admin') {
-      localStorage.setItem('isAdminLoggedIn', 'true');
-      localStorage.setItem('loggedInUser', 'Admin');
-      window.dispatchEvent(new Event('storage'));
-      this.adminUser = 'Admin';
-      alert('Inicio de sesión exitoso.');
-      this.router.navigate(['/admin']);
+  
+    // Obtiene los usuarios desde localStorage
+    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
+  
+    console.log('Credenciales ingresadas:', { email: username, password }); // Debug
+    console.log('Usuarios almacenados:', usuarios); 
+  
+    const usuario = usuarios.find(
+      (user: any) => user.email === username && user.password === password
+    );
+  
+    if (usuario) {
+      // Guarda los datos del usuario logueado en localStorage
+      localStorage.setItem('userData', JSON.stringify(usuario));
+      alert(`Inicio de sesión exitoso como ${usuario.nombreCompleto}`);
+      
+      this.router.navigate([usuario.rol === 'Administrador' ? '/admin' : '/user']);
     } else {
-      alert('Nombre de usuario o contraseña incorrectos.');
+      alert('Correo o contraseña incorrectos.');
     }
   }
+  
+  
+  
 
   // Registrar un nuevo usuario
   onRegisterSubmit(): void {
     if (this.registerForm.invalid) {
       this.registerForm.markAllAsTouched();
-
-
-          // Mostrar el modal de validación
-    const modalElement = document.getElementById('validationModal');
-    if (modalElement) {
-      const modal = new window.bootstrap.Modal(modalElement);
-      modal.show();
+      const modalElement = document.getElementById('validationModal');
+      if (modalElement) {
+        const modal = new window.bootstrap.Modal(modalElement);
+        modal.show();
+      }
+      return;
     }
-    return;
-    }
-
+  
     const formValues = this.registerForm.value;
-
+  
     if (formValues.password !== formValues.confirmPassword) {
       alert('Las contraseñas no coinciden.');
       return;
     }
-
+  
     const usuario = {
       nombreCompleto: formValues.nombreCompleto,
       nombreUsuario: formValues.nombreUsuario,
       email: formValues.email,
       password: formValues.password,
       fechaNacimiento: formValues.fechaNacimiento,
+      direccion: formValues.direccion,
       rol: formValues.rol,
     };
-
-    const usuarios = JSON.parse(localStorage.getItem('usuarios') || '[]');
-    usuarios.push(usuario);
-    localStorage.setItem('usuarios', JSON.stringify(usuarios));
-
-    alert(`Usuario registrado exitosamente con el rol: ${formValues.rol}`);
-    this.registerForm.reset();
+  
+    // Determinar el archivo JSON correspondiente según el rol
+    let jsonResource: string;
+    switch (formValues.rol.toLowerCase()) {
+      case 'administrador':
+        jsonResource = 'admin';
+        break;
+      case 'vendedor':
+        jsonResource = 'vendedor';
+        break;
+      case 'soporte al cliente':
+        jsonResource = 'soportecliente';
+        break;
+      default:
+        jsonResource = 'users'; // Por defecto, guardar en `users.json`
+        break;
+    }
+  
+    // Obtener datos actuales del archivo JSON correspondiente
+    this.jsonService.getJsonData(jsonResource as keyof typeof this.jsonService['urls']).subscribe({
+      next: (existingUsers: any[]) => {
+        console.log(`Usuarios existentes en ${jsonResource}.json:`, existingUsers);
+  
+        // Agregar el nuevo usuario a la lista
+        existingUsers.push(usuario);
+  
+        // Guardar la lista actualizada en el archivo JSON correspondiente
+        this.jsonService.saveJsonData(jsonResource as keyof typeof this.jsonService['urls'], existingUsers).subscribe({
+          next: () => {
+            alert(`Usuario registrado exitosamente en ${jsonResource}.json.`);
+            this.registerForm.reset();
+          },
+          error: (err) => {
+            console.error(`Error al guardar en ${jsonResource}.json:`, err);
+            alert('Hubo un problema al registrar el usuario. Intenta nuevamente.');
+          },
+        });
+      },
+      error: (err) => {
+        console.error(`Error al obtener datos de ${jsonResource}.json:`, err);
+        alert('No se pudo cargar los datos existentes. Intenta nuevamente.');
+      },
+    });
   }
+  
 
   // Actualizar el estado de un pedido
   updateOrderStatus(): void {
@@ -166,21 +217,51 @@ export class AdminComponent implements OnInit {
       alert('Por favor, completa todos los campos del seguimiento.');
       return;
     }
-
+  
     const trackingValues = this.trackingForm.value;
-    const purchases = JSON.parse(localStorage.getItem('purchases') || '[]');
-    const order = purchases.find(
-      (order: any) => order.trackingNumber === trackingValues.trackingNumber
-    );
-
-    if (order) {
-      order.status = trackingValues.orderStatus;
-      localStorage.setItem('purchases', JSON.stringify(purchases));
-      this.updateMessage = 'Estado actualizado correctamente.';
-    } else {
-      this.updateMessage = 'Número de seguimiento no encontrado.';
-    }
+  
+    // Obtener las compras desde S3
+    this.jsonService.getJsonData('purchases').subscribe({
+      next: (purchases) => {
+        // Buscar el pedido por el número de seguimiento
+        const order = purchases.find(
+          (order: any) => order.trackingNumber === trackingValues.trackingNumber
+        );
+  
+        if (order) {
+          // Actualizar el estado
+          order.status = trackingValues.orderStatus;
+  
+          // Guardar los cambios en S3
+          this.jsonService.saveJsonData('purchases', purchases).subscribe({
+            next: () => {
+              alert('Estado actualizado correctamente.');
+              this.updateMessage = 'Estado actualizado correctamente.';
+  
+              // Sincronizar también en LocalStorage
+              localStorage.setItem('purchases', JSON.stringify(purchases));
+              console.log('Cambios sincronizados con S3 y LocalStorage:', purchases);
+  
+              // Recargar las compras
+              this.loadPurchases();
+            },
+            error: (err) => {
+              console.error('Error al guardar los cambios en S3:', err);
+              alert('No se pudo guardar los cambios en el servidor.');
+            },
+          });
+        } else {
+          alert('Número de seguimiento no encontrado.');
+          this.updateMessage = 'Número de seguimiento no encontrado.';
+        }
+      },
+      error: (err) => {
+        console.error('Error al obtener las compras desde S3:', err);
+        alert('No se pudo cargar los datos desde el servidor.');
+      },
+    });
   }
+  
 
   redirectToHome(): void {
     this.router.navigate(['/']);

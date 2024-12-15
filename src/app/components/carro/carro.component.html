@@ -233,9 +233,11 @@
           </tbody>
         </table>
       
-        <div class="total">
-          <strong>Total: ${{ cartTotal | number: '1.2-2' }}</strong>
-        </div>
+        <div class="cart-total">
+            <p>Subtotal (sin IVA): <strong>{{ cartTotal.sinIVA | currency }}</strong></p>
+            <p>IVA (19%): <strong>{{ cartTotal.iva | currency }}</strong></p>
+            <p>Total (con IVA): <strong>{{ cartTotal.conIVA | currency }}</strong></p>
+          </div>
       
         <div class="buttons">
             <button class="btn btn-danger btn-sm" (click)="goToHomePage()">Seguir Comprando</button>
@@ -253,10 +255,24 @@
                 <h5 class="modal-title" id="paymentModalLabel">Modal de Pago</h5>
                 <button type="button" class="btn-close" data-bs-dismiss="modal" aria-label="Close"></button>
             </div>
-            <div class="modal-body">
-                <!-- Condicional para mostrar detalles de la compra solo si el pago no ha sido confirmado -->
-                <div *ngIf="!paymentConfirmed">
-                    <p><strong>Total a pagar:</strong> {{ cartTotal | currency }}</p>
+            <div class="modal-body text-center">
+                <!-- Spinner de carga y estado de procesamiento -->
+                <div *ngIf="paymentProcessing">
+                    <div class="spinner-border text-primary" role="status">
+                        <span class="visually-hidden">Cargando...</span>
+                    </div>
+                    <p class="mt-3">Procesando el pago...</p>
+                </div>
+
+                <!-- Mostrar solo el número de seguimiento después de confirmada la compra -->
+                <div *ngIf="!paymentProcessing && paymentConfirmed">
+                    <p><strong>Número de seguimiento:</strong> {{ trackingNumber }}</p>
+                    <p><strong>¡La boleta ha sido enviada a tu correo electrónico!</strong></p>
+                </div>
+
+                <!-- Mostrar detalles de la compra si no se ha procesado el pago -->
+                <div *ngIf="!paymentProcessing && !paymentConfirmed">
+                    <p><strong>Total a pagar:</strong> {{ cartTotal.conIVA | currency }}</p>
 
                     <h6>Detalles de tu compra:</h6>
                     <ul>
@@ -265,31 +281,37 @@
                         </li>
                     </ul>
 
-                    <p><strong>Sub-total:</strong> {{ subTotal | currency }}</p>
+                    <p><strong>Sub-total (sin IVA):</strong> {{ cartTotal.sinIVA | currency }}</p>
                     <p><strong>Descuento:</strong> {{ discount | currency }}</p>
-                    <p><strong>Impuesto:</strong> {{ tax | currency }}</p>
-                    <p><strong>Total:</strong> {{ cartTotal | currency }}</p>
+                    <p><strong>Impuesto (IVA):</strong> {{ cartTotal.iva | currency }}</p>
+                    <p><strong>Total (con IVA):</strong> {{ cartTotal.conIVA | currency }}</p>
 
                     <p><strong>Método de pago:</strong> {{ paymentMethod }}</p>
                     <p><strong>Fecha estimada de entrega:</strong> {{ estimatedDeliveryDate }}</p>
 
                     <p><strong>Por favor, revisa los detalles antes de proceder.</strong></p>
                 </div>
-
-                <!-- Mostrar solo el número de seguimiento y mensaje después de confirmada la compra -->
-                <div *ngIf="paymentConfirmed">
-                    <p><strong>Número de seguimiento:</strong> {{ trackingNumber }}</p>
-                    <p><strong>¡La boleta ha sido enviada a tu correo electrónico!</strong></p>
-                </div>
             </div>
             <div class="modal-footer">
-                <!-- Mostrar solo el botón de finalizar si el pago está confirmado -->
-                <button type="button" class="btn btn-danger btn-sm" data-bs-dismiss="modal">Finalizar</button>
+                <!-- Botón de Confirmar Pago -->
+                <button
+                    type="button"
+                    class="btn btn-danger btn-sm"
+                    *ngIf="!paymentProcessing && !paymentConfirmed"
+                    (click)="processPayment()"
+                >
+                    Confirmar Pago
+                </button>
 
-                <!-- Mostrar el botón "Confirmar Pago" solo si no se ha confirmado el pago -->
-                <button type="button" class="btn btn-danger btn-sm" *ngIf="!paymentConfirmed" (click)="processPayment()">Confirmar Pago</button>
-
-              
+                <!-- Botón de Finalizar -->
+                <button
+                    type="button"
+                    class="btn btn-secondary btn-sm"
+                    data-bs-dismiss="modal"
+                    *ngIf="!paymentProcessing"
+                >
+                    Finalizar
+                </button>
             </div>
         </div>
     </div>
